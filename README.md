@@ -26,7 +26,7 @@ A web-based HelpDesk application built with **ASP.NET MVC** for managing support
 
   Screenshots :
   
-<img width="323" height="284" alt="login" src="https://github.com/user-attachments/assets/b2ba97f9-1ff2-4348-86a6-d15f8537f5d8" />
+<img width="323" height="284" alt="login" src="https://github.com/user-attachments/assets/b2ba97f9-1ff2-4348-86a6-d15f8537f5d8" /> <br/>
 
 <img width="945" height="448" alt="dash admin" src="https://github.com/user-attachments/assets/dde1aaa0-889d-4495-b16d-6ff93d8d8c42" />
 
