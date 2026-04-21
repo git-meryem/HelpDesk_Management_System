@@ -35,18 +35,32 @@ A web-based HelpDesk application built with **ASP.NET MVC** for managing support
 
 <img width="945" height="448" alt="dash admin" src="https://github.com/user-attachments/assets/d5a41f75-8108-4b51-b573-70651fc783c7" />
 
+
+
 <img width="954" height="459" alt="list tickets" src="https://github.com/user-attachments/assets/d6832517-1c27-43c2-b7ce-916688e719cc" />
+
+
 
 <img width="806" height="416" alt="edit ticket" src="https://github.com/user-attachments/assets/1dbc54a5-2cc6-49ed-ab85-e2bc682be846" />
 
+
+
 <img width="818" height="355" alt="ticket details" src="https://github.com/user-attachments/assets/ddab1c16-0266-45b0-ae3a-cb404c5b626e" />
+
+
 
 <img width="815" height="306" alt="categorie list" src="https://github.com/user-attachments/assets/5b8b1b20-7dde-48c7-bd75-2c2b6a5f11ce" />
 
+
+
 <img width="824" height="287" alt="users list" src="https://github.com/user-attachments/assets/ceaeef5e-de67-422b-a026-165ee50324cd" />
+
+
 
 <img width="331" height="328" alt="edit profile" src="https://github.com/user-attachments/assets/356cb3c9-993e-4e16-807a-0c3b4866adcb" />
 
 
+Created By : 
 
-
+GitHub: https://github.com/git-meryem
+GitHub: https://github.com/your-username
