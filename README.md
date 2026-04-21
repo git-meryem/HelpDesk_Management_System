@@ -1,3 +1,4 @@
+<img width="821" height="350" alt="create ticket" src="https://github.com/user-attachments/assets/d2e2497d-fc45-4de6-a295-d86007a4df31" />
 HelpDesk Management System
 A web-based HelpDesk application built with **ASP.NET MVC** for managing support tickets efficiently between users, agents, and administrators.
 
@@ -25,10 +26,22 @@ A web-based HelpDesk application built with **ASP.NET MVC** for managing support
 - Chart.js
 
   Screenshots :
+
   
-<img width="323" height="284" alt="login" src="https://github.com/user-attachments/assets/b2ba97f9-1ff2-4348-86a6-d15f8537f5d8" /> <br/>
+<p align="center">
+  <img width="320" src="https://github.com/user-attachments/assets/3e55de84-b868-4652-9184-a754d61a378f" />
+  <img width="320" src="https://github.com/user-attachments/assets/54545a8f-5a3f-46dd-b847-d7212dca9235" />
+</p>
+
+<br/>
 
 <img width="945" height="448" alt="dash admin" src="https://github.com/user-attachments/assets/dde1aaa0-889d-4495-b16d-6ff93d8d8c42" />
+<br/>
+
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/7864a9f5-6d2c-4daf-bf66-5666bb6d48ba" />
+  <img width="400" src="https://github.com/user-attachments/assets/36549fff-f43d-4a89-9486-a4f2eafef1ef" />
+</p>
 
 Created By : 
 
