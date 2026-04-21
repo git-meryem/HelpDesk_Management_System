@@ -1,0 +1,71 @@
+﻿@model Users
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3 text-center">
+        <div class="rounded-circle bg-light d-inline-flex justify-content-center align-items-center shadow-sm"
+             style="width:70px;height:70px;">
+            <i class="fas fa-user fa-2x text-primary"></i>
+        </div>
+
+        <h5 class="mt-3 mb-0 fw-bold">Edit User</h5>
+        <small class="text-muted">Update user information</small>
+    </div>
+
+    <!-- FULL NAME -->
+    <div class="mb-3">
+        <label class="form-label fw-semibold">
+            Full Name
+        </label>
+
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fas fa-user"></i>
+            </span>
+
+            <input asp-for="FullName"
+                   class="form-control"
+                   placeholder="Enter full name" />
+        </div>
+
+        <span asp-validation-for="FullName" class="text-danger small"></span>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="mb-3">
+        <label class="form-label fw-semibold">
+            Email
+        </label>
+
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fas fa-envelope"></i>
+            </span>
+
+            <input asp-for="Email"
+                   class="form-control"
+                   placeholder="Enter email address" />
+        </div>
+
+        <span asp-validation-for="Email" class="text-danger small"></span>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="d-flex justify-content-end gap-2 mt-4">
+
+        <button type="button"
+                class="btn btn-light border px-4"
+                data-bs-dismiss="modal">
+            Cancel
+        </button>
+
+        <button type="submit"
+                class="btn btn-success px-4">
+            <i class="fas fa-save"></i> Save
+        </button>
+
+    </div>
+
+</form>

@@ -1,0 +1,82 @@
+﻿@model UserApp.Models.Users
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <!-- CARD -->
+            <div class="card card-primary card-outline shadow">
+
+                <!-- HEADER -->
+                <div class="card-header text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </h4>
+                </div>
+
+                <div class="card-body box-profile text-center">
+
+                    <!-- IMAGE -->
+                    <img class="profile-user-img img-fluid img-circle mb-3"
+                         style="width:120px; height:120px; object-fit:cover;"
+                         src="@(!string.IsNullOrEmpty(Model.ProfileImage)
+                                                                             ? Model.ProfileImage
+                                                                             : "https://ui-avatars.com/api/?name=" + Model.FullName + "&background=3c8dbc&color=fff&size=128")"
+                         alt="User profile picture">
+
+                    <!-- NAME -->
+                    <h3 class="profile-username font-weight-bold">
+                        @Model.FullName
+                    </h3>
+
+                    <p class="text-muted">
+                        <i class="fas fa-envelope"></i> @Model.Email
+                    </p>
+
+                    <hr>
+
+                    <!-- INFO -->
+                    <div class="text-left px-3">
+
+                        <div class="row mb-2">
+                            <div class="col-5 font-weight-bold">Full Name</div>
+                            <div class="col-7 text-right">@Model.FullName</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-5 font-weight-bold">Email</div>
+                            <div class="col-7 text-right">@Model.Email</div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-5 font-weight-bold">Username</div>
+                            <div class="col-7 text-right">@Model.UserName</div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <!-- BUTTON -->
+                    <a asp-controller="Account"
+                           asp-action="EditProfile"
+                           class="btn btn-primary btn-block">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

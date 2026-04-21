@@ -1,0 +1,225 @@
+﻿@model UserApp.ViewModels.DashboardViewModel
+
+@using System.Text.Json
+
+<div class="row">
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@Model.TotalTickets</h3>
+                <p>Total Tickets</p>
+            </div>
+            <div class="icon"><i class="fas fa-ticket-alt"></i></div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>@Model.OpenTickets</h3>
+                <p>Open Tickets</p>
+            </div>
+            <div class="icon"><i class="fas fa-folder-open"></i></div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>@Model.InProgressTickets</h3>
+                <p>In Progress</p>
+            </div>
+            <div class="icon"><i class="fas fa-spinner"></i></div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>@Model.ClosedTickets</h3>
+                <p>Closed Tickets</p>
+            </div>
+            <div class="icon"><i class="fas fa-check"></i></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card mt-2">
+            <div class="card-header">
+                <h3 class="card-title">Tickets Analytics</h3>
+            </div>
+
+            <div class="card-body">
+                <canvas id="ticketChart" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mt-2">
+            <div class="card-header">
+                <h3 class="card-title">Tickets Trend (Last 7 Days)</h3>
+            </div>
+
+            <div class="card-body">
+                <canvas id="lineChart" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Latest Tickets</h3>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var t in Model.LatestTickets)
+                {
+                    <tr>
+                        <td>@t.Title</td>
+
+                        <td>
+                            @if (t.Status == "Open")
+                            {
+                                <span class="badge badge-success">Open</span>
+                            }
+                            else if (t.Status == "In Progress")
+                            {
+                                <span class="badge badge-warning">In Progress</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-secondary">Closed</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (t.Priority == "High")
+                            {
+                                <span class="badge badge-danger">High</span>
+                            }
+                            else if (t.Priority == "Medium")
+                            {
+                                <span class="badge badge-warning">Medium</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-info">Low</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Agent Performance</h3>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>Tickets Assigned</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var a in Model.AgentStats)
+                {
+                    <tr>
+                        <td>@a.AgentName</td>
+                        <td>
+                            <span class="badge bg-primary">
+                                @a.TicketCount
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+ 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const open = Number('@Model.OpenTickets') || 0;
+    const progress = Number('@Model.InProgressTickets') || 0;
+    const closed = Number('@Model.ClosedTickets') || 0;
+
+    console.log(open, progress, closed);
+
+    new Chart(document.getElementById('ticketChart'), {
+    type: 'doughnut',
+    data: {
+    labels: ['Open', 'In Progress', 'Closed'],
+    datasets: [{
+    data: [open, progress, closed],
+    backgroundColor: [
+    '#28a745',
+    '#ffc107',
+    '#dc3545'
+    ],
+    borderWidth: 1
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false
+    }
+    });
+</script>
+
+<script>
+    const labels = JSON.parse('@Html.Raw(JsonSerializer.Serialize(Model.Last7Days))');
+    const data = JSON.parse('@Html.Raw(JsonSerializer.Serialize(Model.TicketsPerDay))');
+
+    new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+    labels: labels,
+    datasets: [{
+    label: 'Tickets',
+    data: data,
+    borderColor: '#007bff',
+    backgroundColor: 'rgba(0,123,255,0.2)',
+    fill: true,
+    tension: 0.4
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+    y: {
+    beginAtZero: true,
+    ticks: {
+    precision: 0  
+    }
+    }
+    }
+    }
+    });
+</script>

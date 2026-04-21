@@ -1,0 +1,70 @@
+﻿@model UserApp.Models.Users
+
+@{
+    ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card card-primary">
+
+                <div class="card-header">
+                    <h3 class="card-title">Edit Profile</h3>
+                </div>
+
+                <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+
+                    <div class="card-body">
+
+                        <!-- IMAGE -->
+                        <div class="text-center mb-3">
+
+                            <img src="@(!string.IsNullOrEmpty(Model.ProfileImage) ? Model.ProfileImage : "https://ui-avatars.com/api/?name=" + Model.FullName)"
+                                 class="img-circle"
+                                 width="120"
+                                 height="120" />
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input asp-for="FullName" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <!-- IMAGE UPLOAD -->
+                        <div class="form-group">
+                            <label>Profile Image</label>
+                            <input type="file" name="ImageFile" class="form-control" />
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+
+                        <a asp-action="Profile" class="btn btn-secondary float-right">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

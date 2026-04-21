@@ -1,0 +1,100 @@
+﻿@using UserApp.ViewModels;
+@model RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="register-box">
+
+    <!-- LOGO -->
+    <div class="register-logo">
+        <a href="#">
+            <i class="fas fa-headset text-primary"></i>
+            <b>HelpDesk</b> App
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body register-card-body">
+
+            <p class="login-box-msg">Create a new account</p>
+
+            <form asp-action="Register" method="post">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- NAME -->
+                <div class="input-group mb-3">
+                    <input asp-for="Name" class="form-control" placeholder="Full Name" />
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+
+                <!-- EMAIL -->
+                <div class="input-group mb-3">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+                <!-- PASSWORD -->
+                <div class="input-group mb-3">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="input-group mb-3">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                <!-- BUTTON -->
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Register
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+            <hr>
+
+            <p class="text-center mb-0">
+                Already have an account?
+                <a asp-controller="Account" asp-action="Login">
+                    Login
+                </a>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,16 @@
+# Visual Studio
+
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.vsidx
+
+# build outputs
+Debug/
+Release/
+x64/
+x86/

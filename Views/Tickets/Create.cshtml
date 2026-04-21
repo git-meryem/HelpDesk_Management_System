@@ -1,0 +1,262 @@
+﻿@model UserApp.Models.Ticket
+
+@{
+    ViewData["Title"] = "Create Ticket";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .card {
+        border-radius: 14px;
+        border: none;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15);
+        }
+
+    .drop-zone {
+        border: 2px dashed #0d6efd;
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+        background: #fafbff;
+    }
+
+        .drop-zone:hover {
+            background: #f1f6ff;
+            border-color: #0b5ed7;
+        }
+
+    .preview-box {
+        position: relative;
+        display: inline-block;
+    }
+
+        .preview-box img {
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+        }
+
+        .preview-box button {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            padding: 0;
+        }
+
+    .page-title {
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+
+    .subtitle {
+        color: #6c757d;
+        font-size: 13px;
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+        padding: 10px 20px;
+    }
+
+    .btn-outline-secondary {
+        border-radius: 10px;
+    }
+
+</style>
+
+<div class="container-fluid py-3">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+        <h3 class="page-title">Create Ticket</h3>
+        <small>Fill the form below to submit a new ticket</small>
+        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+   
+
+    <div class="card shadow-sm">
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                <!-- TITLE -->
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input asp-for="Title" class="form-control" placeholder="Enter ticket title" />
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"
+                              placeholder="Describe your issue..."></textarea>
+                </div>
+
+                <!-- DROPZONE -->
+                <div class="mb-3">
+
+                    <label class="form-label">Screenshots</label>
+
+                    <div id="dropZone" class="drop-zone">
+                        📂 Drag & Drop images here or click to upload
+                        <input type="file" id="fileInput" name="files" multiple accept="image/*" hidden />
+                    </div>
+
+                    <div id="previewContainer" class="d-flex flex-wrap gap-2 mt-3"></div>
+
+                </div>
+
+                <!-- ROW -->
+                <div class="row">
+
+                    <!-- PRIORITY -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Priority</label>
+                        <select asp-for="Priority" class="form-select">
+                            <option value="">Select</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                        </select>
+                    </div>
+
+                    <!-- CATEGORY -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-select">
+                            <option value="">Select</option>
+                            @foreach (var cat in ViewBag.Categories)
+                            {
+                                <option value="@cat.Id">@cat.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- AGENT -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Assign Agent</label>
+                        <select asp-for="AssignedToId" class="form-select">
+                            <option value="">Select</option>
+                            @foreach (var agent in ViewBag.Agents)
+                            {
+                                <option value="@agent.Id">@agent.FullName</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        Create Ticket
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    let filesList = [];
+
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const previewContainer = document.getElementById("previewContainer");
+
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", (e) => {
+        handleFiles(e.target.files);
+    });
+
+    dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.style.background = "#eef4ff";
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.style.background = "#fafbff";
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        handleFiles(e.dataTransfer.files);
+    });
+
+    function handleFiles(files) {
+
+        for (let file of files) {
+
+            if (!file.type.startsWith("image/")) continue;
+
+            filesList.push(file);
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                const div = document.createElement("div");
+                div.className = "preview-box";
+
+                div.innerHTML = `
+                    <img src="${e.target.result}">
+                    <button type="button" class="btn btn-danger btn-sm">×</button>
+                `;
+
+                div.querySelector("button").onclick = () => {
+                    previewContainer.removeChild(div);
+                    filesList = filesList.filter(f => f !== file);
+                };
+
+                previewContainer.appendChild(div);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    document.querySelector("form").addEventListener("submit", function () {
+
+        const dt = new DataTransfer();
+
+        filesList.forEach(f => dt.items.add(f));
+
+        fileInput.files = dt.files;
+    });
+
+</script>

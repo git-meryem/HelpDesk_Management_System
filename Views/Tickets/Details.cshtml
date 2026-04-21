@@ -1,0 +1,379 @@
+﻿@model UserApp.Models.Ticket
+@{
+    ViewData["Title"] = "Ticket #" + Model.Id;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="title">
+            Ticket <span>#@Model.Id</span>
+        </div>
+
+        <a asp-action="Index" class="back">← Back</a>
+    </div>
+
+    <div class="grid">
+
+        <!-- LEFT SIDE -->
+        <div class="card soft">
+
+            <div class="header">
+                <h2>@Model.Title</h2>
+
+                <span class="badge @Model.Status.ToLower()">
+                    @Model.Status
+                </span>
+            </div>
+
+            <p class="desc">@Model.Description</p>
+
+            <div class="meta">
+                <div>
+                    <span>User</span>
+                    <b>@Model.User?.FullName</b>
+                </div>
+
+                <div>
+                    <span>Agent</span>
+                    <b>@(Model.AssignedTo?.FullName ?? "Unassigned")</b>
+                </div>
+            </div>
+
+            <div class="section-title">Attachments</div>
+
+            <div class="attachments">
+                @if (Model.Attachments != null && Model.Attachments.Any())
+                {
+                    foreach (var img in Model.Attachments)
+                    {
+                        <img src="@Url.Content(img.FilePath)" onclick="openImg(this.src)" />
+                    }
+                }
+                else
+                {
+                    <span class="muted">No attachments</span>
+                }
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="card chat">
+
+            <div class="chat-header">
+                <h3>Conversation</h3>
+                <span class="muted">Live discussion</span>
+            </div>
+
+            <div id="comments" class="messages">
+
+                @foreach (var c in Model.Comments ?? new List<UserApp.Models.Comment>())
+                {
+                    <div class="msg">
+                        <div class="msg-top">
+                            <b>@c.User?.FullName</b>
+                            <small>@c.CreatedAt.ToString("HH:mm")</small>
+                        </div>
+                        <div class="msg-text">@c.Content</div>
+                    </div>
+                }
+
+            </div>
+
+            <form id="commentForm" class="input-box">
+                <input type="hidden" name="ticketId" value="@Model.Id" />
+                <input name="content" id="content" placeholder="Write a message..." />
+                <button type="submit">Send</button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= IMAGE MODAL PRO ================= -->
+<div id="imgModal" class="img-modal">
+
+    <span class="close" onclick="closeImg()">×</span>
+
+    <!-- DOWNLOAD -->
+    <a id="downloadBtn" class="download" download>⬇ Download</a>
+
+    <div class="img-wrapper">
+        <img id="bigImg" />
+    </div>
+
+</div>
+
+<style>
+body{
+    background:#f4f6fb;
+    font-family: Inter, Arial;
+}
+
+.page{ padding:25px; }
+
+/* TOP */
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.title{ font-size:18px; font-weight:600; }
+.title span{ color:#888; }
+
+.back{
+    background:#fff;
+    padding:8px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    color:#333;
+    box-shadow:0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* LEFT */
+.soft{ display:flex; flex-direction:column; gap:15px; }
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* BADGE */
+.badge{
+    padding:6px 12px;
+    border-radius:999px;
+    color:#fff;
+    font-size:12px;
+}
+.open{ background:#22c55e; }
+.inprogress{ background:#f59e0b; }
+.closed{ background:#6b7280; }
+
+.desc{ color:#555; }
+
+.meta{
+    display:flex;
+    gap:40px;
+    font-size:13px;
+}
+
+.meta span{
+    display:block;
+    font-size:11px;
+    color:#999;
+}
+
+/* ATTACHMENTS */
+.attachments{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+    gap:14px;
+}
+
+.attachments img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:14px;
+    cursor:pointer;
+    transition:0.25s;
+    box-shadow:0 8px 20px rgba(0,0,0,0.12);
+}
+
+.attachments img:hover{
+    transform:scale(1.05);
+}
+
+/* CHAT */
+.chat{
+    display:flex;
+    flex-direction:column;
+    height:520px;
+}
+
+.messages{
+    flex:1;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.msg{
+    background:#f8fafc;
+    padding:10px;
+    border-radius:12px;
+}
+
+/* INPUT */
+.input-box{
+    display:flex;
+    gap:10px;
+}
+
+.input-box input{
+    flex:1;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+.input-box button{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+}
+
+/* ================= MODAL ================= */
+.img-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.97);
+    z-index:999999;
+}
+
+/* close */
+.close{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:45px;
+    color:white;
+    cursor:pointer;
+}
+
+/* download */
+.download{
+    position:absolute;
+    top:20px;
+    left:30px;
+    background:#2563eb;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    z-index:999999;
+}
+
+/* image wrapper */
+.img-wrapper{
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+.img-wrapper img{
+    max-width:100%;
+    max-height:100%;
+    cursor:grab;
+    position:relative;
+    transform:translate(0,0);
+}
+</style>
+
+<script>
+let img = document.getElementById("bigImg");
+let modal = document.getElementById("imgModal");
+let downloadBtn = document.getElementById("downloadBtn");
+
+let isDragging = false;
+let startX, startY;
+let posX = 0, posY = 0;
+
+/* OPEN IMAGE */
+function openImg(src){
+    img.src = src;
+    modal.style.display = "block";
+    downloadBtn.href = src;
+    reset();
+}
+
+/* CLOSE */
+function closeImg(){
+    modal.style.display = "none";
+}
+
+/* CLICK OUTSIDE */
+modal.addEventListener("click", function(e){
+    if(e.target === modal){
+        closeImg();
+    }
+});
+
+/* DRAG */
+img.addEventListener("mousedown", (e)=>{
+    isDragging = true;
+    startX = e.clientX - posX;
+    startY = e.clientY - posY;
+    img.style.cursor = "grabbing";
+});
+
+document.addEventListener("mousemove", (e)=>{
+    if(!isDragging) return;
+
+    posX = e.clientX - startX;
+    posY = e.clientY - startY;
+
+    img.style.transform = `translate(${posX}px, ${posY}px)`;
+});
+
+document.addEventListener("mouseup", ()=>{
+    isDragging = false;
+    img.style.cursor = "grab";
+});
+
+/* RESET */
+function reset(){
+    posX = 0;
+    posY = 0;
+    img.style.transform = "translate(0,0)";
+}
+
+/* COMMENTS */
+document.getElementById("commentForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch('/Tickets/AddComment', {
+        method:'POST',
+        body:new FormData(this)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success){
+            let div = document.createElement("div");
+            div.className = "msg";
+            div.innerHTML = `<b>${data.user}</b><div>${data.content}</div>`;
+            document.getElementById("comments").prepend(div);
+            document.getElementById("content").value = "";
+        }
+    });
+});
+</script>

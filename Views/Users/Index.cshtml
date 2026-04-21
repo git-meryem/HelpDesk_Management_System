@@ -1,0 +1,304 @@
+﻿@model List<UserApp.Models.ViewModels.UserViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+            <div>
+                <h3 class="fw-bold mb-0">Users Management</h3>
+                <small class="text-muted">Manage system users and roles</small>
+            </div>
+
+            <a asp-action="Create" class="btn btn-primary rounded-pill px-3">
+                <i class="fas fa-plus"></i> New User
+            </a>
+        </div>
+
+        <!-- CARD -->
+        <div class="card shadow-sm border-0">
+
+            <!-- SEARCH -->
+            <div class="card-header bg-white">
+                <input type="text"
+                       id="searchInput"
+                       class="form-control form-control-sm w-25"
+                       placeholder="Search user..." />
+            </div>
+
+            <!-- TABLE -->
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0" id="usersTable">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+
+                                    <td class="fw-semibold">@user.FullName</td>
+                                    <td class="text-muted">@user.Email</td>
+
+                                    <td>
+                                        @if (user.Role == "Admin")
+                                        {
+                                            <span class="badge bg-danger">Admin</span>
+                                        }
+                                        else if (user.Role == "Agent")
+                                        {
+                                            <span class="badge bg-warning text-dark">Agent</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">User</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <!-- ROLE -->
+                                        <form asp-action="ChangeRole" method="post" class="d-inline">
+
+                                            <input type="hidden" name="userId" value="@user.Id" />
+
+                                            <select name="role"
+                                                    class="form-control form-control-sm d-inline w-auto"
+                                                    onchange="this.form.submit()">
+
+                                                <option value="User" selected="@(user.Role == "User")">User</option>
+                                                <option value="Agent" selected="@(user.Role == "Agent")">Agent</option>
+                                                <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+
+                                            </select>
+
+                                        </form>
+
+                                        <!-- EDIT -->
+                                        <button class="btn btn-sm btn-outline-warning"
+                                                data-toggle="modal"
+                                                data-target="#editModal"
+                                                data-id="@user.Id"
+                                                data-name="@user.FullName"
+                                                data-email="@user.Email">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+
+                                        <!-- RESET -->
+                                        <button class="btn btn-sm btn-outline-info"
+                                                data-toggle="modal"
+                                                data-target="#resetModal"
+                                                data-id="@user.Id">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+
+                                        <!-- DELETE -->
+                                        <button class="btn btn-sm btn-outline-danger deleteBtn"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@user.Id"
+                                                data-title="@user.FullName">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Delete User</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                        Are you sure you want to delete
+                        <strong id="deleteName"></strong> ?
+                    </p>
+
+                    <input type="hidden" name="id" id="deleteId" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-danger">
+                        Delete
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+ <div class="modal fade" id="editModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="post" asp-action="Edit">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="Id" id="editId" />
+
+                    <label>Full Name</label>
+                    <input name="FullName" id="editName" class="form-control mb-2" />
+
+                    <label>Email</label>
+                    <input name="Email" id="editEmail" class="form-control" />
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success">Save</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+ <div class="modal fade" id="resetModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="post" asp-action="ResetPassword">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="UserId" id="resetUserId" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+
+                    @* <input name="OldPassword" type="password" class="form-control mb-2" placeholder="Old Password" /> *@
+                    <input name="NewPassword" type="password"
+                           class="form-control mb-2"
+                           placeholder="New Password" />
+
+                    <input name="ConfirmPassword" type="password"
+                           class="form-control"
+                           placeholder="Confirm Password" />
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success">Update</button>
+                </div>
+
+            </form>
+
+            
+
+        </div>
+    </div>
+</div>
+
+ <script src="~/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // SEARCH
+        $("#searchInput").on("keyup", function () {
+            let value = $(this).val().toLowerCase();
+
+            $("#usersTable tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+        // DELETE MODAL
+        $(".deleteBtn").click(function () {
+            $("#deleteId").val($(this).data("id"));
+            $("#deleteName").text($(this).data("title"));
+        });
+
+        // EDIT MODAL
+        $('#editModal').on('show.bs.modal', function (e) {
+            let btn = $(e.relatedTarget);
+
+            $('#editId').val(btn.data('id'));
+            $('#editName').val(btn.data('name'));
+            $('#editEmail').val(btn.data('email'));
+        });
+
+        // RESET MODAL
+        $('#resetModal').on('show.bs.modal', function (e) {
+            let btn = $(e.relatedTarget);
+
+            $('#resetUserId').val(btn.data('id'));
+        });
+
+    });
+</script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            var success = '@(TempData["Success"] ?? "")';
+            var error = '@(TempData["Error"] ?? "")';
+
+            if (success.trim() !== "") {
+                showSuccess(success);
+            }
+
+            if (error.trim() !== "") {
+                showError(error);
+            }
+
+        });
+    </script>
+}

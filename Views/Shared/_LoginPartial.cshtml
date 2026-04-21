@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserApp.Models.Users> SignInManager
+@inject UserManager<UserApp.Models.Users> UserManager
+
+<ul class="navbar-nav ml-auto">
+
+    @{
+        var appUser = await UserManager.GetUserAsync(User);
+
+        var name = appUser?.FullName ?? "User";
+        var initials = string.Join("", name.Split(' ').Select(x => x[0])).ToUpper();
+    }
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle d-flex align-items-center"
+                   data-toggle="dropdown">
+
+                <span class="nav-link d-flex align-items-center">
+
+                    @appUser?.FullName
+                </span>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right">
+
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button class="dropdown-item text-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+
+            </div>
+        </li>
+
+       
+    }
+</ul>
